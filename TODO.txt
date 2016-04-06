@@ -1,0 +1,5 @@
+Make a simple framework to seperate different api from api.php
+Make a unit test for each api
+
+Separate the config.php, leave a dummy file with docs on the public folder, move the real data into the non-public include folder
+
