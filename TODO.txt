@@ -1,5 +1,29 @@
 Make a simple framework to seperate different api from api.php
 Make a unit test for each api
 
+Integrate ZeroMQ / RabbitMQ / ActiveMQ / Apollo to manage with RaspPi device
+
 Separate the config.php, leave a dummy file with docs on the public folder, move the real data into the non-public include folder
+Support encrypt wechat message
+Support send message back after 5 sec
+Auto push new status message on wechat each day
+
+Install zeromq
+1. brew install zeromq
+2. easy_install pyzmq / pip install pyzmq
+
+Install pear and pecl for php
+Ref http://www.tuicool.com/articles/bE77N3
+1. curl -O http://pear.php.net/go-pear.phar
+2. sudo php -d detect_unicode=0 go-pear.phar
+3. Press 1 to set installation base to /usr/local/pear
+4. Press 4 to set binary directory to /usr/local/bin
+5. Press return to install
+6. pear version
+
+Install php binding
+Ref http://php.net/manual/en/zmq.setup.php 
+1. brew install autoconf
+2. sudo pecl install zmq-beta
+3. Edit /etc/php.ini add "extension=zmq.so"
 
