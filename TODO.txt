@@ -7,6 +7,16 @@ Separate the config.php, leave a dummy file with docs on the public folder, move
 Support encrypt wechat message
 Support send message back after 5 sec
 Auto push new status message on wechat each day
+How to use message relay, let Wechat server can ask Pi directly
+
+Messages:
+1. Pi send REG to gardarner, REG include UUID
+   Pi keep the message pipe alive
+   Pi send HEARTBEAT to make sure the socket not be closed for every 30s
+   Pi send UPDATE to update sensor data
+2. Gardarner remember Pi UUID and last HEARTBEAT, if device lost, remove it
+2. Wechat send QUERY to gardarner to list alive Pi, get UUID and REG time
+   Send GET to get sensor current data
 
 Install zeromq
 1. brew install zeromq
