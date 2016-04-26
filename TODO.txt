@@ -8,6 +8,7 @@ Support encrypt wechat message
 Support send message back after 5 sec
 Auto push new status message on wechat each day
 How to use message relay, let Wechat server can ask Pi directly
+Use python-daemon to implement a well behaviour unix daemon
 
 Messages:
 1. Pi send REG to gardarner, REG include UUID
