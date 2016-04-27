@@ -6,6 +6,7 @@ import sys
 import zmq
 import json
 import pickle
+import signal
 import logging
 import threading
 
@@ -53,15 +54,31 @@ class ReceiverHelper():
     _conf = "gardener.conf"
 
     def __init__(self):
-        self.data = {}
+        self._data = self._load()
 
     def set_data(self, key, value):
-        self.data[key] = value
+        self._data[key] = value
+        self._save(self._data)
 
     def get_data(self, key, default):
-        if key in self.data:
-            return self.data[key]
-        return default
+        return self._data.get(key, default)
+
+    def _save(self, data):
+        logger.debug("saving")
+        with open(self._conf, 'w') as f:
+            pickle.dump(data, f)
+        logger.debug("saving data:%s" % repr(self._data))
+
+    def _load(self):
+        logger.debug("loading")
+        result = {}
+        if os.path.isfile(self._conf):
+            with open(self._conf, 'r') as f:
+                result = pickle.load(f)
+            logger.debug("loading data:%s" % repr(result))
+        else:
+            logger.debug("loading failed")
+        return result
 
     def set_pid(self, pid):
         self.set_data("pid", pid)
@@ -69,6 +86,7 @@ class ReceiverHelper():
     def stop_receiver(self):
         result = False
         pid = self.get_data("pid", None)
+        logger.debug("pid:%s" % repr(pid))
         if pid != None and pid > 0:
             try:
                 os.kill(pid, signal.SIGKILL)
