@@ -4,6 +4,8 @@
 import os
 import sys
 import zmq
+import json
+import pickle
 import logging
 import threading
 
@@ -22,29 +24,44 @@ class Receiver(threading.Thread):
 
     def run(self):
         logger.debug("running+")
-
         context = zmq.Context()
         socket = context.socket(zmq.REP)
         socket.bind("tcp://*:5555")
-
         while True:
             socket.send(self.handle(socket.recv()))
-
         socket.close()
         logger.debug("running-")
 
     def handle(self, message):
         logger.debug("handle_message {}".format(message))
-        return "Hello"
+        request = json.loads(message)
+        response = {}
+        if request != None:
+            if request['type'] == "REG":
+                logger.debug("REG uuid:%s" % request['uuid'])
 
-class ReceiverHelper(persist.FilePersist):
+            response['type'] = "REG"
+            response['uuid'] = request['uuid']
+            response['response'] = 0
+        return json.dumps(response)
+
+class ReceiverHelper():
     '''
     Helper class to quit the running daemon
     Sending signal to the persisted pid
     '''
+    _conf = "gardener.conf"
 
     def __init__(self):
-        persist.FilePersist.__init__(self, "gardener.conf")
+        self.data = {}
+
+    def set_data(self, key, value):
+        self.data[key] = value
+
+    def get_data(self, key, default):
+        if key in self.data:
+            return self.data[key]
+        return default
 
     def set_pid(self, pid):
         self.set_data("pid", pid)

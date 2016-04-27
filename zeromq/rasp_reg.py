@@ -19,8 +19,13 @@ def main():
     socket = context.socket(zmq.REQ)
     socket.connect("tcp://localhost:5555")
 
-    request = "Hello"
-    socket.send(request)
+    uid = gen_uuid()
+    logger.debug("uid:%s" % uid)
+
+    request = {}
+    request['type'] = "REG"
+    request['uuid'] = uid
+    socket.send(json.dumps(request))
 
     response = socket.recv()
     logger.info("Received reply %s [ %s ]" % (request, response));
@@ -28,22 +33,20 @@ def main():
     socket.close()
 
 def gen_uuid():
-    if os.path.isfile('zmq.conf'):
-        with open('zmq.conf', 'r') as f:
+    if os.path.isfile('rasp.conf'):
+        with open('rasp.conf', 'r') as f:
             cache = json.load(f)
             uid = cache['uuid']
     else:
         uid = uuid.uuid1()
         cache = {}
         cache['uuid'] = str(uid)
-        with open('zmq.conf', 'w') as f:
+        with open('rasp.conf', 'w') as f:
             json.dump(cache, f)
     return uid
 
 if __name__ == '__main__':
     logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
             datefmt='%Y-%m-%d %H:%M:%S')
-    uid = gen_uuid()
-    print "uid:%s" % uid
-    #main()
+    main()
 
