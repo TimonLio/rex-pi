@@ -85,7 +85,9 @@ class Receiver(threading.Thread):
 
         if self.timer != None:
             self.timer.cancel()
-        self.timer = threading.Timer(min(timestamps) + 10 - time.time(), self.on_timeout, [ session_id ])
+        self.timer = threading.Timer(min(timestamps) + 10 - time.time(),
+                self.on_timeout,
+                [ session_id ])
         self.timer.start()
 
     def on_timeout(self, session_id):
