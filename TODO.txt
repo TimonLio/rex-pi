@@ -11,13 +11,19 @@ How to use message relay, let Wechat server can ask Pi directly
 Use python-daemon to implement a well behaviour unix daemon
 
 Messages:
-1. Pi send REG to gardarner, REG include UUID
-   Pi keep the message pipe alive
-   Pi send HEARTBEAT to make sure the socket not be closed for every 30s
-   Pi send UPDATE to update sensor data
+1. Pi send REG to gardarner, REG include UUID, response with session_id
+   Pi persist the session_id for sending other messages
+   Pi send HEARTBEAT with session_id to make sure the session alive
+   Pi send UPDATE to update sensor data with session_id
 2. Gardarner remember Pi UUID and last HEARTBEAT, if device lost, remove it
 2. Wechat send QUERY to gardarner to list alive Pi, get UUID and REG time
    Send GET to get sensor current data
+
+Server
+1. Run as daemon, receive all the message and restore the data in cache
+2. If got quit signal, persist the cache into file
+3. Support launch without persisted data
+
 
 Install zeromq
 1. brew install zeromq

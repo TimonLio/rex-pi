@@ -28,7 +28,7 @@ def main():
     socket.send(json.dumps(request))
 
     response = socket.recv()
-    logger.info("Received reply %s [ %s ]" % (request, response));
+    logger.info("response:%s" % response);
 
     socket.close()
 
