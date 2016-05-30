@@ -13,24 +13,40 @@ logger.setLevel(logging.DEBUG)
 
 
 def main():
-    logger.info("main");
+    logger.debug("main");
     context = zmq.Context()
 
-    socket = context.socket(zmq.REQ)
-    socket.connect("tcp://localhost:5555")
+    reqs = context.socket(zmq.REQ)
+    reqs.connect("tcp://localhost:5555")
+
+    subs = context.socket(zmq.SUB)
+    subs.connect("tcp://localhost:5556")
+    subs.setsockopt(zmq.SUBSCRIBE, "")
 
     uid = gen_uuid()
-    logger.debug("uid:%s" % uid)
+    logger.info("uid:%s" % uid)
 
     request = {}
     request['type'] = "REG"
     request['uuid'] = uid
-    socket.send(json.dumps(request))
+    reqs.send(json.dumps(request))
 
-    response = socket.recv()
-    logger.info("response:%s" % response);
+    response = reqs.recv()
+    logger.debug("response:%s" % response);
 
-    socket.close()
+    #poller = zmq.Poller()
+    #poller.register(reqs, zmq.POLLIN)
+    #poller.register(subs, zmq.POLLIN)
+
+    while True:
+        handle(subs.recv())
+
+    reqs.close()
+    subs.close()
+
+def handle(message):
+    logger.debug("handle message:%s" % message);
+    pass
 
 def gen_uuid():
     if os.path.isfile('rasp.conf'):

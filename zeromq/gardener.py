@@ -35,11 +35,18 @@ class Receiver(threading.Thread):
     def run(self):
         logger.debug("running+")
         context = zmq.Context()
-        socket = context.socket(zmq.REP)
-        socket.bind("tcp://*:5555")
+
+        reps = context.socket(zmq.REP)
+        reps.bind("tcp://*:5555")
+
+        self.pubs = context.socket(zmq.PUB)
+        self.pubs.bind("tcp://*:5556")
+
         while True:
-            socket.send(self.handle(socket.recv()))
-        socket.close()
+            reps.send(self.handle(reps.recv()))
+
+        reps.close()
+        self.pubs.close()
         logger.debug("running-")
 
     def handle(self, message):
@@ -73,6 +80,10 @@ class Receiver(threading.Thread):
                 if info != None:
                     info.timestamp = time.time()
                     self.reset_timer(request['session_id'])
+
+            if request['type'] == "WOL":
+                logger.debug("WOL mac:%s" % request['macaddr'])
+                self.pubs.send(json.dumps(request['macaddr']))
 
         return json.dumps(response)
 
