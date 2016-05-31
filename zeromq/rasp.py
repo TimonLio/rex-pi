@@ -8,6 +8,8 @@ import json
 import uuid
 import logging
 
+from wakeonlan import wol
+
 logger = logging.getLogger("zmq");
 logger.setLevel(logging.DEBUG)
 
@@ -45,8 +47,9 @@ def main():
     subs.close()
 
 def handle(message):
-    logger.debug("handle message:%s" % message);
-    pass
+    macaddr = json.loads(message)
+    logger.debug("handle message:%s macaddr:%s" % (message, macaddr));
+    wol.send_magic_packet(macaddr)
 
 def gen_uuid():
     if os.path.isfile('rasp.conf'):
