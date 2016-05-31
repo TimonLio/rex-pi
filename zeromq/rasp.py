@@ -54,9 +54,9 @@ def gen_uuid():
             cache = json.load(f)
             uid = cache['uuid']
     else:
-        uid = uuid.uuid1()
+        uid = str(uuid.uuid1())
         cache = {}
-        cache['uuid'] = str(uid)
+        cache['uuid'] = uid
         with open('rasp.conf', 'w') as f:
             json.dump(cache, f)
     return uid
