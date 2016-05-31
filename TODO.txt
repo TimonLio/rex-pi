@@ -1,14 +1,11 @@
 Make a simple framework to seperate different api from api.php
 Make a unit test for each api
-
-Integrate ZeroMQ / RabbitMQ / ActiveMQ / Apollo to manage with RaspPi device
-
 Separate the config.php, leave a dummy file with docs on the public folder, move the real data into the non-public include folder
 Support encrypt wechat message
 Support send message back after 5 sec
 Auto push new status message on wechat each day
-How to use message relay, let Wechat server can ask Pi directly
 Use python-daemon to implement a well behaviour unix daemon
+Use config file to hold the server's address
 
 Messages:
 1. Pi send REG to gardarner, REG include UUID, response with session_id
@@ -16,8 +13,9 @@ Messages:
    Pi send HEARTBEAT with session_id to make sure the session alive
    Pi send UPDATE to update sensor data with session_id
 2. Gardarner remember Pi UUID and last HEARTBEAT, if device lost, remove it
-2. Wechat send QUERY to gardarner to list alive Pi, get UUID and REG time
+3. Wechat send QUERY to gardarner to list alive Pi, get UUID and REG time
    Send GET to get sensor current data
+4. Wechat send WOL with macaddr to gardarner to broadcast wakeonlan
 
 Server
 1. Run as daemon, receive all the message and restore the data in cache
