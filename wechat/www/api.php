@@ -19,7 +19,7 @@ if (isset($_GET['echostr'])) {
 } else {
     //get post data, May be due to the different environments
     //$postStr = $_POST['HTTP_RAW_POST_DATA'];
-    $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
+    $postStr = isset($GLOBALS["HTTP_RAW_POST_DATA"]) ? $GLOBALS["HTTP_RAW_POST_DATA"] : null;
 
     //extract post data
     if (!empty($postStr)) {
@@ -64,13 +64,37 @@ function checkSignature()
 function handleMessage($toUserName, $fromUserName, $createTime, $msgType, $content, $msgId)
 {
     $contentStr = strtolower(trim($content));
-    if ($contentStr == "func1") {
-	printResponse($fromUserName, $toUserName, "Response for func1");
+    if (0 == stripos($contentStr, "wol")) {
+	$arr = explode("_", $contentStr);
+	$macaddr = $arr[count($arr) - 1];
+	if (ereg("[a-f]{12}", $macaddr)) {
+	    handleWakeOnLan($macaddr);
+	    printResponse($fromUserName, $toUserName, "Magic sent");
+	} else {
+	    printResponse($fromUserName, $toUserName, "Mac address invalid");
+	}
     } else if ($contentStr == "func2") {
 	printResponse($fromUserName, $toUserName, "Response for func2");
     } else {
-	printResponse($fromUserName, $toUserName, "Hello world!");
+	printResponse($fromUserName, $toUserName,
+		"Unknown message [${contentStr}]!");
     }
+}
+
+function handleWakeOnLan($macaddr)
+{
+    $context = new ZMQContext();
+
+    $reqs = new ZMQSocket($context, ZMQ::SOCKET_REQ);
+    $reqs->connect("tcp://localhost:5555");
+
+    $request = array();
+    $request['type'] = "WOL";
+    $request['macaddr'] = $macaddr;
+
+    $reqs->send(json_encode($request));
+    $reply = $reqs->recv();
+    printf("Received reply: [%s]\n", $reply);
 }
 
 function printResponse($toUserName, $fromUserName, $content)

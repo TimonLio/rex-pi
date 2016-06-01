@@ -23,9 +23,15 @@ Server
 3. Support launch without persisted data
 
 
-Install zeromq
+Install zeromq for MacOS
 1. brew install zeromq
-2. easy_install pyzmq / pip install pyzmq
+2. easy_install pyzmq
+
+Install zeromq for Ubuntu
+1. sudo apt-get install pkg-config
+2. sudo apt-get install php5-dev
+3. sudo apt-get install libzmq-dev
+4. pip install pyzmq
 
 Install pear and pecl for php
 Ref http://www.tuicool.com/articles/bE77N3
@@ -35,6 +41,7 @@ Ref http://www.tuicool.com/articles/bE77N3
 4. Press 4 to set binary directory to /usr/local/bin
 5. Press return to install
 6. pear version
+
 
 Install php binding
 Ref http://php.net/manual/en/zmq.setup.php 

@@ -1,2 +1,6 @@
-wechat/www/inc/config.php
+.*
 *.swp
+*.pyc
+*.conf
+tarball
+wechat/www/inc/config.php
