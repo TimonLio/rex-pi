@@ -1,6 +1,6 @@
 .*
 *.swp
-*.pyc
+*.json
 *.conf
 tarball
 wechat/www/inc/config.php
