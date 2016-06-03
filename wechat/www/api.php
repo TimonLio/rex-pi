@@ -67,11 +67,11 @@ function handleMessage($toUserName, $fromUserName, $createTime, $msgType, $conte
     if (0 == stripos($contentStr, "wol")) {
 	$arr = explode("_", $contentStr);
 	$macaddr = $arr[count($arr) - 1];
-	if (ereg("[a-f]{12}", $macaddr)) {
+	if (ereg("[0-9a-f]{12}", $macaddr)) {
 	    handleWakeOnLan($macaddr);
 	    printResponse($fromUserName, $toUserName, "Magic sent");
 	} else {
-	    printResponse($fromUserName, $toUserName, "Mac address invalid");
+	    printResponse($fromUserName, $toUserName, "Mac address ${macaddr} invalid");
 	}
     } else if ($contentStr == "func2") {
 	printResponse($fromUserName, $toUserName, "Response for func2");
